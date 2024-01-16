@@ -1,0 +1,56 @@
+ val data = spark.read.format("csv").option("header", true).option("inferSchema", true).load("/user/maria_dev/final/BreweryData/brewery_data_complete_extended.csv")
+
+//Which style of beer and location had the best sales for each month?
+val month = data.withColumn("month", substring(col("Brew_Date"), 6, 2))
+val grouped = month.groupBy($"Month", $"Location", $"beer_style").sum("total_sales").withColumnRenamed("sum(total_sales)", "sum_sales")
+val maxs = grouped.groupBy($"Month").max("sum_sales").withColumnRenamed("max(sum_sales)", "max_sales")
+
+maxs.createOrReplaceTempView("maxs")
+grouped.createOrReplaceTempView("grouped")
+spark.sqlContext.sql("SELECT a.month, b.location, b.beer_style, a.max_sales/1000000 as sales_in_mils FROM maxs a inner join grouped b on a.month == b.month where a.max_sales == b.sum_sales order by month ").show()
+
+//which characteristics result in the highest quality scores for each type of beer?
+val grouped = data.groupBy($"beer_style").max("Quality_Score").withColumnRenamed("max(Quality_Score)", "max_score")
+
+grouped.createOrReplaceTempView("grouped")
+data.createOrReplaceTempView("data")
+spark.sqlContext.sql("SELECT a.beer_style, b.fermentation_time, b.temperature, b.ph_level, b.gravity, b.alcohol_content, b.bitterness, b.ingredient_ratio FROM grouped a inner join data b on a.beer_style == b.beer_style where a.max_score == b.Quality_Score").show()
+
+//Do different locations have different preferences in packaging?
+val grouped_scores = data.groupBy($"Location",$"SKU").avg("Quality_Score").withColumnRenamed("avg(Quality_Score)", "avg_score")
+val grouped_sales = data.groupBy($"Location",$"SKU").avg("total_sales").withColumnRenamed("avg(total_sales)", "avg_sales")
+val joined = grouped_scores.join(grouped_sales, Seq("Location","SKU"))
+val scores = joined.withColumn("combined_score", (col("avg_score")*col("avg_sales"))/1000)
+val max_scores = scores.groupBy($"Location").max("combined_score").withColumnRenamed("max(combined_score)", "max_score")
+
+max_scores.createOrReplaceTempView("max_scores")
+scores.createOrReplaceTempView("scores")
+//multiplying score by sales to make sure both are accounted for when looking into preferences
+spark.sqlContext.sql("select location, sku, combined_score from scores order by location, combined_score").show()
+
+//What is the best packaging method on average for each location using combined score?
+spark.sqlContext.sql("SELECT a.location, b.sku, b.combined_score FROM max_scores a inner join scores b on a.location=b.location where a.max_score==b.combined_score").show()
+
+//Provide a recommendation of what to do if the goal is to create the best beer for the current month while maintaining reasonable revenue
+val month = data.withColumn("month", substring(col("Brew_Date"), 6, 2))
+val ElectronicCity = month.filter("Location=='Electronic City'").filter("Month==12")
+val quality = ElectronicCity.groupBy($"Location", $"Month", $"Beer_Style").avg("Quality_Score").withColumnRenamed("avg(Quality_Score)", "avg_score")
+val sales = ElectronicCity.groupBy($"Location", $"Month", $"Beer_Style").avg("total_sales").withColumnRenamed("avg(total_sales)", "avg_sales")
+val volume = ElectronicCity.groupBy($"Location", $"Month", $"Beer_Style").avg("volume_produced").withColumnRenamed("avg(volume_produced)", "avg_vol")
+val joined = quality.join(sales, Seq("Location", "Month", "Beer_Style"))
+val joined1 = joined.join(volume, Seq("Location", "Month", "Beer_Style"))
+val scores = joined1.withColumn("score", (col("avg_score")*.7)*((col("avg_sales")/col("avg_vol"))*.3)).orderBy("score")
+//Lager has the highest average score
+
+val lager = ElectronicCity.filter("beer_style == 'Lager'")
+
+//cans have highest sales for lagers in Electronic City in December
+val packaging = lager.groupBy($"SKU").avg("total_sales").withColumnRenamed("avg(total_sales)", "avg_sales")
+
+val filter_final = lager.filter("SKU == 'Cans'").orderBy("Quality_Score")
+
+filter_final.createOrReplaceTempView("filter_final")
+spark.sqlContext.sql("SELECT beer_style, fermentation_time, temperature, ph_level, gravity, alcohol_content, bitterness, ingredient_ratio FROM filter_final order by Quality_Score DESC LIMIT 1").show()
+
+
+

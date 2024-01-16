@@ -1,0 +1,56 @@
+1. //Which style of beer and location had the best sales for each month?
++-----+-----------+----------+------------------+
+|month|   location|beer_style|     sales_in_mils|
++-----+-----------+----------+------------------+
+|   01|Rajajinagar|     Stout|113.92549733200183|
+|   02|  Yelahanka|Wheat Beer|104.08094653065312|
+|   03|Malleswaram|   Pilsner|113.69542599212708|
+|   04|Malleswaram|    Porter|110.23368891588491|
+|   05|Koramangala|      Sour|114.44510333806329|
+|   06| HSR Layout|     Lager|110.29453914158942|
+|   07|Malleswaram|Wheat Beer|114.13241251203824|
+|   08|  Yelahanka|Wheat Beer|114.06894685193116|
+|   09|  Jayanagar|      Sour|109.92531287651254|
+|   10|Rajajinagar|      Sour|113.90376890331741|
+|   11| HSR Layout|Wheat Beer|111.09163635362636|
+|   12|  Yelahanka|      Sour|113.59205330654652|
++-----+-----------+----------+------------------+
+2. //which characteristics result in the highest quality scores for each type of beer?
++----------+-----------------+------------------+------------------+------------------+------------------+----------+----------------+
+|beer_style|fermentation_time|       temperature|          ph_level|           gravity|   alcohol_content|bitterness|ingredient_ratio|
++----------+-----------------+------------------+------------------+------------------+------------------+----------+----------------+
+|     Lager|               14|21.509962633706103| 5.262393591234504|1.0349008321385733|5.1103911907703425|        58|     1:0.33:0.14|
+|   Pilsner|               17|20.528062458162125| 4.790292091608979|1.0394841457273651| 5.886334082583932|        46|     1:0.34:0.11|
+|       IPA|               10|21.974904875361368| 4.871006265842134|1.0681353706155274| 4.759774979795586|        23|     1:0.20:0.15|
+|       Ale|               13|17.644876941488327| 5.359091713254267|1.0302893065429155| 5.458387499903544|        51|     1:0.36:0.12|
+|Wheat Beer|               11|21.620990005371805| 5.364851390509087|1.0608536745685115| 5.552723427206043|        57|     1:0.33:0.15|
+|    Porter|               11|23.512311507916124| 4.716593997734948|1.0360659717148881| 5.199818411093613|        33|     1:0.44:0.27|
+|      Sour|               17|18.479331564820786|4.5573151191356285|1.0538164900771547| 5.086545663743697|        22|     1:0.21:0.27|
+|     Stout|               13|24.057730466372146| 5.303952850661563| 1.051034701678578|  4.78043603743125|        46|     1:0.41:0.15|
++----------+-----------------+------------------+------------------+------------------+------------------+----------+----------------+
+3.//Do different locations have different preferences in packaging? //What is the best packaging method on average for each location using combined score?
+Combined scores are close but each place has a category with an edge.
++---------------+-------+-----------------+
+|       location|    sku|   combined_score|
++---------------+-------+-----------------+
+|    Indiranagar|  Pints|84.03672810408152|
+|      Jayanagar|   Cans|84.05989455407502|
+|    Rajajinagar|Bottles|84.09783556925409|
+|   Marathahalli|   Cans| 84.0841755301517|
+|    Koramangala|Bottles|84.04373490610524|
+|     HSR Layout|  Pints|84.17664189408103|
+|     Whitefield|   Cans|84.05871034519119|
+|    Malleswaram|   Cans|84.05816038468801|
+|      Yelahanka|  Pints|84.16344408762308|
+|Electronic City|   Cans|84.15667052317642|
++---------------+-------+-----------------+
+4. //Provide a recommendation of what to do if the goal is to create the best beer for the current month and location while maintaining reasonable revenue.
+Going to use a score where quality is rated over sales, however sales are still accounted for. 
+Looking at December in Electronic City. Going to provide beer style, packaging type, and characteristics to aim for when brewing.
+Recommendation is to make a Lager due to highest weighted score across all Decembers. Cans have highest sales in Electronic City throughout all decembers, so recommendation for cans as packaging. Characteristics listed below:
+Shortened: Lager, Cans, characteristics below:
++----------+-----------------+------------------+-----------------+------------------+-----------------+----------+----------------+
+|beer_style|fermentation_time|       temperature|         ph_level|           gravity|  alcohol_content|bitterness|ingredient_ratio|
++----------+-----------------+------------------+-----------------+------------------+-----------------+----------+----------------+
+|     Lager|               18|23.810535763006435|4.872190428655958|1.0492829809827968|4.914662986858918|        47|     1:0.26:0.27|
++----------+-----------------+------------------+-----------------+------------------+-----------------+----------+----------------+
