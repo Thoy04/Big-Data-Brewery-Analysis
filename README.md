@@ -1,5 +1,9 @@
-# Big-Data-Brewery-Analysis
-This was my final project for the 'Big Data: High Performance Computing' class that is a part of my MS in Data Science program. This project was completely self-directed, with the only requirement being to use a large dataset. For this project, I decided to explore the Brewery Operations and Market Analysis Dataset from kaggle. This dataset includes 10 million rows and 20 columns of information about craft beer brewing batches from Jan 2020 - Jan 2024 (see link below). 
-The goal of this project was to provide a data-driven recommendation to the brewery about what to brew in the next month. This analysis was done using Apache Zeppelin and scala. The 'final part 2 txt.txt' document shows this code along with some comments and the 'final_part2.txt' document shows the output along with the questions the code helped to answer.
-
-dataset link: https://www.kaggle.com/datasets/ankurnapa/brewery-operations-and-market-analysis-dataset
+# Big Data Brewery Analysis
+## Overview
+This project utilizes Apache Zeppelin and Scala to explore the Brewery Operations and Market Analysis Dataset sourced from Kaggle. The primary objective is to provide the brewery with data-driven recommendations for their next brew based on a comprehensive analysis of the dataset.
+## Dataset
+The dataset, obtained from Kaggle, includes information related to Brewery Operations and Market Analysis. It encompasses 10 million rows with various attributes such as beer names, styles, ingredients, production volumes, and market performance metrics.
+## Source
+https://www.kaggle.com/datasets/ankurnapa/brewery-operations-and-market-analysis-dataset
+## Methods
+This data was explored using Apache Zeppelin and Scala. The 'final part 2 txt.txt' document includes the code and comments and the 'final_part2.txt' document includes the questions the output of the code helped to answer. 
